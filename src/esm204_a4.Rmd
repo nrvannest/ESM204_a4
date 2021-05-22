@@ -14,3 +14,71 @@ warming <- read.csv(here("data", "warming.csv"))
 damages <- read.csv(here("data", "damages.csv"))
 ```
 
+1. Create a quadratic damage function relating the `$$` value of damages to the change in global mean temperature. 
+
+```{r preliminary data visualization}
+#damages %>% ggplot(aes(x = warming, y = damages)) + geom_point() 
+
+```
+
+```{r building quadratic function}
+#y = ax^2 + bx + c
+
+damages_quadratic <- cbind("warming_sq" = (damages$warming)^2, damages)
+damages_lm <- lm(damages ~ warming_sq + warming + 0, data = damages_quadratic)
+a <- damages_lm$coefficients[["warming_sq"]]
+b <- damages_lm$coefficients[["warming"]]
+
+damages_lm2 <- a*damages_quadratic$warming_sq + b*damages_quadratic$warming
+
+damages_quadratic %>% ggplot(aes(x = warming, y = damages)) +
+  geom_point() +
+  geom_line(aes(y = damages_lm2)) +
+  ylab("Damage") +
+  xlab("Warming scenario") +
+  theme_minimal()+
+  ggtitle("Estimating Damages Under Warming Scenarios")
+
+```
+
+2. Use warming data to predict damages under baseline and pulse scenarios.
+
+```{r, non-pulse scenario}
+damages_baseline <- a*((warming$warming_baseline)^2) + b*warming$warming_baseline
+
+warming %>% ggplot(aes(x = year, y = damages_baseline)) +
+  geom_point() +
+  geom_line(aes(y = damages_baseline)) +
+  ylab("Damages ($)") +
+  xlab("Year") +
+  theme_minimal()+
+  ggtitle("Estimating Damages Under Warming Baseline Scenario")
+
+```
+
+```{r, pulse scenario}
+damages_pulse <- a*((warming$warming_pulse)^2) + b*warming$warming_pulse
+
+warming %>% ggplot(aes(x = year, y = damages_pulse)) +
+  geom_point() +
+  geom_line(aes(y = damages_pulse)) +
+  ylab("Damages ($)") +
+  xlab("Year") +
+  theme_minimal()+
+  ggtitle("Estimating Damages Under Pulse Warming Scenario")
+```
+
+
+```{r, difference between pulse and non-pulse scenarios}
+
+difference_scenario <- damages_pulse - damages_baseline
+
+warming %>% ggplot(aes(x = year, y = difference_scenario)) +
+  geom_point() +
+  geom_line(aes(y = difference_scenario)) +
+  ylab("Damages ($)") +
+  xlab("Year") +
+  theme_minimal()+
+  ggtitle("Estimating Differences in Damages Between Baseline and Pulse")
+```
+ 
