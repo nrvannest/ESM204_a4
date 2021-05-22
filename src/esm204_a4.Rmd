@@ -81,4 +81,7 @@ warming %>% ggplot(aes(x = year, y = difference_scenario)) +
   theme_minimal()+
   ggtitle("Estimating Differences in Damages Between Baseline and Pulse")
 ```
+```{r, Difference in damages per ton CO2}
+
+```
  
