@@ -25,11 +25,11 @@ damages <- read.csv(here("data", "damages.csv"))
 #y = ax^2 + bx + c
 
 damages_quadratic <- cbind("warming_sq" = (damages$warming)^2, damages)
-damages_lm <- lm(damages ~ warming_sq + warming + 0, data = damages_quadratic)
-a <- damages_lm$coefficients[["warming_sq"]]
-b <- damages_lm$coefficients[["warming"]]
+damages_lm <- lm(damages ~ warming_sq + warming + 0, data = damages_quadratic) #linear model
+a <- damages_lm$coefficients[["warming_sq"]] #coefficient a
+b <- damages_lm$coefficients[["warming"]] #coefficient b
 
-damages_lm2 <- a*damages_quadratic$warming_sq + b*damages_quadratic$warming
+damages_lm2 <- a*damages_quadratic$warming_sq + b*damages_quadratic$warming #Calculating quadratic equation
 
 damages_quadratic %>% ggplot(aes(x = warming, y = damages)) +
   geom_point() +
@@ -81,7 +81,36 @@ warming %>% ggplot(aes(x = year, y = difference_scenario)) +
   theme_minimal()+
   ggtitle("Estimating Differences in Damages Between Baseline and Pulse")
 ```
+
+
 ```{r, Difference in damages per ton CO2}
+per_ton <- difference_scenario / 35000000000 #to get per ton CO2
+
+warming %>% ggplot(aes(x = year, y = per_ton)) +
+  geom_point() +
+  geom_line(aes(y = per_ton)) +
+  ylab("Damages ($/ton CO^2)") +
+  xlab("Year") +
+  theme_minimal()+
+  ggtitle("Estimating Differences in Damages Between Baseline and Pulse in Per ton CO^2 Emitted")
 
 ```
  
+3. Calcuate the SCC against the discount rate for a reasonable range of discount rates.\
+  
+  - Obama: 3%
+  - NY State: 2%
+
+```{r}
+#cost/(1+rate)^year
+
+SCC_2 <- (per_ton)/(1+0.02)^(warming$X)
+
+```
+
+
+
+
+
+
+
