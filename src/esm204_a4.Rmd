@@ -113,13 +113,25 @@ for(i in 1:length(rates)) {
   SCC[i] <- sum(temp)
 }
 
-SCC_table <- data.frame("rates" = rates,
-                        "SCC" = SCC)
+SCC_table <- round(data.frame("rates" = rates,
+                        "SCC" = SCC), 2)
 
 SCC_table %>% ggplot(aes(x = rates)) +
-  geom_point(aes(y = SCC))
+  geom_point(aes(y = SCC)) +
+  geom_line(aes(y = SCC)) +
+  theme_minimal() +
+  xlab("Discount Rate") +
+  ylab("Social Cost of Carbon (SCC) in $/ton of CO^2")
 
 ```
+  
+  
+  - SCC at 1%: $`r SCC_table[1, 2]`/ton CO^2
+  - SCC at 2%: $`r SCC_table[2, 2]`/ton CO^2
+  - SCC at 3%: $`r SCC_table[3, 2]`/ton CO^2
+  - SCC at 4%: $`r SCC_table[4, 2]`/ton CO^2
+  - SCC at 5%: $`r SCC_table[5, 2]`/ton CO^2
+
 
 4.What is the SCC using the Ramsey Rule?
 
@@ -143,15 +155,16 @@ ramsey_table <- data.frame("rates" = rates_ramsey,
                            "SCC" = SCC_ramsey)
 
 ramsey_table %>% ggplot(aes(x = rates)) +
-  geom_point(aes(y = SCC))
+  geom_point(aes(y = SCC)) + 
+  theme_minimal()
 ```
   
-The point calculated using the Ramsey Rule is located at `x = 0.021`, and `y = 70.65`.
-
+The point calculated using the Ramsey Rule is located at location (`x = 0.021`,`y = 70.65`).
 
 5. **What are the expected damages up to year 2100 under Policy A and Policy B?**
 
 **Facts**
+
   - **Policy A**: Either baseline (probability 0.5) or warming each year will be 1.5 times that of the baseline (probability 0.5)
   - **Policy B**: Continue until 2050 at baseline, then stay at 1.29 degrees warming forever
   - Society is risk neutral
@@ -177,7 +190,7 @@ difference_ab <- policy_a_pv-policy_b_pv
 
 ```
 
-Expected damages under Policy A: `r policy_a_pv`
+Expected damages under Policy A:`r policy_a_pv`
 Expected damages under Policy B: `r policy_b_pv`
 Initial undertaking of Policy B would have to cost less than `r difference_ab` to justify choosing Policy A over Policy B
 
