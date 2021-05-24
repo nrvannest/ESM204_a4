@@ -96,18 +96,81 @@ warming %>% ggplot(aes(x = year, y = per_ton)) +
 
 ```
  
-3. Calcuate the SCC against the discount rate for a reasonable range of discount rates.\
+3. Calcuate the SCC against the discount rate for a reasonable range of discount rates.
   
   - Obama: 3%
   - NY State: 2%
+  
+Here we have calculated the SCC at discount rates between 1-5%
 
 ```{r}
 #cost/(1+rate)^year
 
-SCC_2 <- (per_ton)/(1+0.02)^(warming$X)
+SCC <- c()
+rates <- c(0.01, 0.02, 0.03, 0.04, 0.05)
+for(i in 1:length(rates)) {
+  temp <- (per_ton)/(1+rates[i])^(warming$X)
+  SCC[i] <- sum(temp)
+}
+
+SCC_table <- data.frame("rates" = rates,
+                        "SCC" = SCC)
+
+SCC_table %>% ggplot(aes(x = rates)) +
+  geom_point(aes(y = SCC))
 
 ```
 
+4.What is the SCC using the Ramsey Rule?
+
+```{r}
+#r = p +ng
+
+p <- 0.001
+n <- 2
+g <- 0.01
+
+ramsey <- p + n*g
+
+SCC_ramsey <- c()
+rates_ramsey <- c(0.01, 0.02, 0.03, 0.04, 0.05, ramsey)
+for(i in 1:length(rates_ramsey)) {
+  temp <- (per_ton)/(1+rates_ramsey[i])^(warming$X)
+  SCC_ramsey[i] <- sum(temp)
+}
+
+ramsey_table <- data.frame("rates" = rates_ramsey,
+                           "SCC" = SCC_ramsey)
+
+ramsey_table %>% ggplot(aes(x = rates)) +
+  geom_point(aes(y = SCC))
+```
+
+5. **What are the expected damages up to year 2100 under Policy A and Policy B?**
+
+**Facts**
+- **Policy A**: Either baseline (probability 0.5) or warming each year will be 1.5 times that of the baseline (probability 0.5)
+- **Policy B**: Continue until 2050 at baseline, then stay at 1.29 degrees warming forever
+- Society is risk neutral
+- Discount rate = 2%
+
+```{r}
+#(Scenario 1 * probablity) + (Scenario 2 * probability)
+warming_1.5 <- warming$warming_baseline * 1.5 #create warming scenario
+damages_1.5 <- a*((warming_1.5)^2) + b*warming_1.5 #plug into quadratic equation
+
+policy_a <- (damages_baseline*0.5) + (damages_1.5*0.5) #calculate overall expected damages
+
+policy_a_discount <- (policy_a)/(1+0.02)^(warming$X) #calculate present value for each year
+policy_a_pv <- sum(policy_a_discount) #Sum for NPV
+
+b_1.29 <- rep(1.29, 50) #Create warming sequence for scenario b
+policy_b_warming <- c(warming$warming_baseline[1:30], b_1.29) #combine with baseline
+damages_b <- a*((policy_b_warming)^2) + b*policy_b_warming #put into quadratic equation
+policy_b <- (damages_b)/(1+0.02)^(warming$X) #calculate present value
+policy_b_pv <- sum(policy_b) #find NPV
+
+```
 
 
 
