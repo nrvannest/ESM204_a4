@@ -145,14 +145,17 @@ ramsey_table <- data.frame("rates" = rates_ramsey,
 ramsey_table %>% ggplot(aes(x = rates)) +
   geom_point(aes(y = SCC))
 ```
+  
+The point calculated using the Ramsey Rule is located at `x = 0.021`, and `y = 70.65`.
+
 
 5. **What are the expected damages up to year 2100 under Policy A and Policy B?**
 
 **Facts**
-- **Policy A**: Either baseline (probability 0.5) or warming each year will be 1.5 times that of the baseline (probability 0.5)
-- **Policy B**: Continue until 2050 at baseline, then stay at 1.29 degrees warming forever
-- Society is risk neutral
-- Discount rate = 2%
+  - **Policy A**: Either baseline (probability 0.5) or warming each year will be 1.5 times that of the baseline (probability 0.5)
+  - **Policy B**: Continue until 2050 at baseline, then stay at 1.29 degrees warming forever
+  - Society is risk neutral
+  - Discount rate = 2%
 
 ```{r}
 #(Scenario 1 * probablity) + (Scenario 2 * probability)
@@ -170,8 +173,13 @@ damages_b <- a*((policy_b_warming)^2) + b*policy_b_warming #put into quadratic e
 policy_b <- (damages_b)/(1+0.02)^(warming$X) #calculate present value
 policy_b_pv <- sum(policy_b) #find NPV
 
+difference_ab <- policy_a_pv-policy_b_pv
+
 ```
 
+Expected damages under Policy A: `r policy_a_pv`
+Expected damages under Policy B: `r policy_b_pv`
+Initial undertaking of Policy B would have to cost less than `r difference_ab` to justify choosing Policy A over Policy B
 
 
 
