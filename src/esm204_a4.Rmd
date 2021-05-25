@@ -123,7 +123,7 @@ SCC_table %>% ggplot(aes(x = rates)) +
   theme_minimal() +
   xlab("Discount Rate") +
   ylab("Social Cost of Carbon (SCC) in $/ton of CO^2") +
-  ggtitle("")
+  ggtitle("SCC under Discount Rates 1-5%")
 
 ```
   
@@ -159,7 +159,8 @@ ramsey_table <- data.frame("rates" = rates_ramsey,
 ramsey_table %>% ggplot(aes(x = rates)) +
   geom_point(aes(y = SCC)) + 
   geom_line(aes(y = SCC)) +
-  theme_minimal()
+  theme_minimal() +
+  ggtitle("SCC Discounted with 1-5% and the Ramsey Rule")
 ```
   
 The point calculated using the Ramsey Rule is located at location (`x = 0.021`,`y = 70.65`).
