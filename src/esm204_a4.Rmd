@@ -108,16 +108,16 @@ Here we have calculated the SCC at discount rates between 1-5%
 #cost/(1+rate)^year
 
 SCC <- c()
-rates <- c(0.01, 0.02, 0.03, 0.04, 0.05)
-for(i in 1:length(rates)) {
+rates <- c(0.01, 0.02, 0.03, 0.04, 0.05) #Discount rates chosen
+for(i in 1:length(rates)) { #Calculating PV's in the loop
   temp <- (per_ton)/(1+rates[i])^(warming$X)
   SCC[i] <- sum(temp)
 }
 
-SCC_table <- round(data.frame("rates" = rates,
+SCC_table <- round(data.frame("rates" = rates, #put into a data frame to run in ggplot
                         "SCC" = SCC), 2)
 
-SCC_table %>% ggplot(aes(x = rates)) +
+SCC_table %>% ggplot(aes(x = rates)) + #create a graph of SCC's under discount rates
   geom_point(aes(y = SCC)) +
   geom_line(aes(y = SCC)) +
   theme_minimal() +
@@ -144,19 +144,19 @@ p <- 0.001
 n <- 2
 g <- 0.01
 
-ramsey <- p + n*g
+ramsey <- p + n*g #Ramsey Rule equation
 
 SCC_ramsey <- c()
-rates_ramsey <- c(0.01, 0.02, 0.03, 0.04, 0.05, ramsey)
+rates_ramsey <- c(0.01, 0.02, 0.03, 0.04, 0.05, ramsey) #Adding Ramsey to the loop
 for(i in 1:length(rates_ramsey)) {
   temp <- (per_ton)/(1+rates_ramsey[i])^(warming$X)
   SCC_ramsey[i] <- sum(temp)
 }
 
-ramsey_table <- data.frame("rates" = rates_ramsey,
+ramsey_table <- data.frame("rates" = rates_ramsey, #Moving to a data frame for ggplot
                            "SCC" = SCC_ramsey)
 
-ramsey_table %>% ggplot(aes(x = rates)) +
+ramsey_table %>% ggplot(aes(x = rates)) + #Graphing the SCC's under several discount rates
   geom_point(aes(y = SCC)) + 
   geom_line(aes(y = SCC)) +
   theme_minimal() +
@@ -165,7 +165,7 @@ ramsey_table %>% ggplot(aes(x = rates)) +
   
 The point calculated using the Ramsey Rule is located at location (`x = 0.021`,`y = 70.65`).
 
-5. **What are the expected damages up to year 2100 under Policy A and Policy B?**
+**5. What are the expected damages up to year 2100 under Policy A and Policy B?**
 
   **Facts**
 
@@ -190,16 +190,23 @@ damages_b <- a*((policy_b_warming)^2) + b*policy_b_warming #put into quadratic e
 policy_b <- (damages_b)/(1+0.02)^(warming$X) #calculate present value
 policy_b_pv <- sum(policy_b) #find NPV
 
-difference_ab <- policy_a_pv-policy_b_pv
+difference_ab <- policy_a_pv-policy_b_pv #Value of X to meet damages in policy A
+
+baseline_0.02 <- (damages_baseline)/(1+0.02)^(warming$X)
+baseline_sum <- sum(baseline_0.02) #Calculate sum of PV of baseline scenario alone
+
+warm_1.5_0.02 <- (damages_1.5)/(1+0.02)^(warming$X) #Calculate sum of PV of 1.5 warming scenario alone
+warm1.5_sum <- sum(warm_1.5_0.02)
 
 ```
 
-  - Expected damages under Policy A: $`r scientific(policy_a_pv)`
+  - Expected damages under Policy A: $`r scientific(round(policy_a_pv, 2))`
   
-  - Expected damages under Policy B: $`r scientific(policy_b_pv)`
+  - Expected damages under Policy B: $`r scientific(round(policy_b_pv, 2))`
   
-  - Initial undertaking of Policy B would have to cost less than $`r scientific(difference_ab)` to justify choosing Policy A over Policy B
+  - Initial undertaking of Policy B would have to cost less than $`r scientific(round(difference_ab, 2))` to justify choosing Policy A over Policy B
  
+ - If society was risk averse, Policy B would still be the preferred outcome because the costs are guaranteed. On the other hand, Policy A is a riskier option(there are two potential scenarios) and incurs significantly higher costs.  
 
 
 
