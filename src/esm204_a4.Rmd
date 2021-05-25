@@ -1,7 +1,7 @@
 ---
 title: "Homework 4"
 author: "Nikole Vannest, Emiliano Espinoza, Elena Oritz"
-date: "5/22/2021"
+date: "5/28/2021"
 output: html_document
 ---
 
@@ -9,12 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(here)
+library(formattable)
 
 warming <- read.csv(here("data", "warming.csv"))
 damages <- read.csv(here("data", "damages.csv"))
 ```
 
-1. Create a quadratic damage function relating the `$$` value of damages to the change in global mean temperature. 
+1. Create a quadratic damage function relating the `$$` value of damages to the change in global mean temperature and plot with underlyind data. 
 
 ```{r preliminary data visualization}
 #damages %>% ggplot(aes(x = warming, y = damages)) + geom_point() 
@@ -34,8 +35,8 @@ damages_lm2 <- a*damages_quadratic$warming_sq + b*damages_quadratic$warming #Cal
 damages_quadratic %>% ggplot(aes(x = warming, y = damages)) +
   geom_point() +
   geom_line(aes(y = damages_lm2)) +
-  ylab("Damage") +
-  xlab("Warming scenario") +
+  ylab("Damage ($)") +
+  xlab("Warming scenario (degrees C)") +
   theme_minimal()+
   ggtitle("Estimating Damages Under Warming Scenarios")
 
@@ -92,7 +93,7 @@ warming %>% ggplot(aes(x = year, y = per_ton)) +
   ylab("Damages ($/ton CO^2)") +
   xlab("Year") +
   theme_minimal()+
-  ggtitle("Estimating Differences in Damages Between Baseline and Pulse in Per ton CO^2 Emitted")
+  ggtitle("Differences in Damages Between Baseline and Pulse in Per ton CO^2 Emitted")
 
 ```
  
@@ -121,7 +122,8 @@ SCC_table %>% ggplot(aes(x = rates)) +
   geom_line(aes(y = SCC)) +
   theme_minimal() +
   xlab("Discount Rate") +
-  ylab("Social Cost of Carbon (SCC) in $/ton of CO^2")
+  ylab("Social Cost of Carbon (SCC) in $/ton of CO^2") +
+  ggtitle("")
 
 ```
   
@@ -156,6 +158,7 @@ ramsey_table <- data.frame("rates" = rates_ramsey,
 
 ramsey_table %>% ggplot(aes(x = rates)) +
   geom_point(aes(y = SCC)) + 
+  geom_line(aes(y = SCC)) +
   theme_minimal()
 ```
   
@@ -163,7 +166,7 @@ The point calculated using the Ramsey Rule is located at location (`x = 0.021`,`
 
 5. **What are the expected damages up to year 2100 under Policy A and Policy B?**
 
-**Facts**
+  **Facts**
 
   - **Policy A**: Either baseline (probability 0.5) or warming each year will be 1.5 times that of the baseline (probability 0.5)
   - **Policy B**: Continue until 2050 at baseline, then stay at 1.29 degrees warming forever
@@ -171,7 +174,7 @@ The point calculated using the Ramsey Rule is located at location (`x = 0.021`,`
   - Discount rate = 2%
 
 ```{r}
-#(Scenario 1 * probablity) + (Scenario 2 * probability)
+#(Scenario 1 * probability) + (Scenario 2 * probability)
 warming_1.5 <- warming$warming_baseline * 1.5 #create warming scenario
 damages_1.5 <- a*((warming_1.5)^2) + b*warming_1.5 #plug into quadratic equation
 
@@ -190,9 +193,12 @@ difference_ab <- policy_a_pv-policy_b_pv
 
 ```
 
-Expected damages under Policy A:`r policy_a_pv`
-Expected damages under Policy B: `r policy_b_pv`
-Initial undertaking of Policy B would have to cost less than `r difference_ab` to justify choosing Policy A over Policy B
+  - Expected damages under Policy A: $`r scientific(policy_a_pv)`
+  
+  - Expected damages under Policy B: $`r scientific(policy_b_pv)`
+  
+  - Initial undertaking of Policy B would have to cost less than $`r scientific(difference_ab)` to justify choosing Policy A over Policy B
+ 
 
 
 
