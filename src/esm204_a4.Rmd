@@ -206,7 +206,7 @@ warm1.5_sum <- sum(warm_1.5_0.02)
   
   - Initial undertaking of Policy B would have to cost less than $`r scientific(round(difference_ab, 2))` to justify choosing Policy A over Policy B
  
- - If society was risk averse, Policy B would still be the preferred outcome because the costs are guaranteed. On the other hand, Policy A is a riskier option(there are two potential scenarios) and incurs significantly higher costs.  
+ - If society was risk averse and the expected values for both policies were the same, Policy B would still be the preferred outcome because the costs are guaranteed. On the other hand, Policy A is a riskier option because the expected value is not guaranteed (there are two scenarios).  
 
 
 
