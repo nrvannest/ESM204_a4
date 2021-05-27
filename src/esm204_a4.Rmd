@@ -24,6 +24,7 @@ damages <- read.csv(here("data", "damages.csv"))
 
 ```
 
+Equation: Y= 1.94x - 1.035x^2
 ```{r building quadratic function}
 #y = ax^2 + bx + c
 
